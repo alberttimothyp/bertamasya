@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id"><head><meta charset="utf-8">
+<meta name="color-scheme" content="light only">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f5f3ef">
 <link rel="manifest" href="manifest.json">
@@ -142,6 +143,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--ov),u
 @keyframes hl{0%,45%{background:rgba(37,99,235,.28)}}
 .hl{animation:hl 2.2s ease-out}
 </style>
+<style>
+:root{color-scheme:light only}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#f5f3ef;--page:#f5f3ef;--card:transparent;--fg:#2b2926;--mut:#9a958c;--line:#5f5b54;--gray:#e6e3dd;--hero:#232523;--ic:#9a958c;--bgb:#dde7ef;--fgb:#1d3347;--bgs:#f6dfc6;--fgs:#5a3414;--bgu:#dbe8cf;--fgu:#27441f;--ov:linear-gradient(rgba(245,243,239,.55),rgba(245,243,239,.82));--cb:rgba(255,255,255,.64);--nb:rgba(245,243,239,.9)}}
+:root[data-theme="dark"]{--bg:#f5f3ef;--page:#f5f3ef;--card:transparent;--fg:#2b2926;--mut:#9a958c;--line:#5f5b54;--gray:#e6e3dd;--hero:#232523;--ic:#9a958c;--bgb:#dde7ef;--fgb:#1d3347;--bgs:#f6dfc6;--fgs:#5a3414;--bgu:#dbe8cf;--fgu:#27441f;--ov:linear-gradient(rgba(245,243,239,.55),rgba(245,243,239,.82));--cb:rgba(255,255,255,.64);--nb:rgba(245,243,239,.9)}
+</style>
 </head><body>
 <h1><small id="dt"></small><span id="lg"></span>BERTamaSYA’s</h1>
 <nav id="nav"></nav><div id="app"></div><div id="md"></div>
@@ -176,10 +182,10 @@ const MN=[
 // ===== STATE =====
 let S={habis:[],paid:{},cart:{s:[],m:[],f:[]}},page="home",sim="";
 try{const r=localStorage.getItem("bs");if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
-const save=()=>{try{localStorage.setItem("bs",JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem("bs",JSON.stringify(S))}catch(e){}if(typeof onSave==="function")onSave()};
 S.cart.f=S.cart.f||[];S.xm=S.xm||[];S.xs=S.xs||{};if(!S.xe)S.xe=EV.map(e=>({...e}));
 const T="https://vt.tiktok.com/",LK={"OSENG TEMPE KACANG PANJANG":T+"ZSbk4TPXW/","CHICKEN ROLL":T+"ZSbk4vNR3/","KENTANG DAGING":T+"ZSbDV4wHy/","DORI SAMBAL MATAH":T+"ZSbVDjCMq/","PEPPER LUNCH":T+"ZSbtNXoD6/","FUYUNGHAY":T+"ZSbtjFggF/","KROKET KEPITING":T+"ZSptPxeo5/","PORK CHOP":T+"ZSbtjAxWV/","HONEY LEMON CHICKEN":T+"ZSbtjgdrR/","MAPO TAHU":T+"ZSbtjbRyu/","NASI SIRAM SEAFOOD":"https://www.instagram.com/reel/DSw_mKHE37i/?srtk=eTdvaHg2emY5Ymx5"};
-MN.forEach(m=>{m[5]=LK[m[1]]||""});S.xm.forEach(m=>MN.push(m));S.me=S.me||{};S.xb=S.xb||[];Object.keys(S.me).forEach(k=>{MN[k]=S.me[k]});
+MN.forEach(m=>{m[5]=LK[m[1]]||""});S.xm.forEach(m=>MN.push(m));S.me=S.me||{};S.xb=S.xb||[];BASEN=MN.length-S.xm.length;MN.forEach((m,j)=>{if(j<BASEN&&S.me[m[1]])MN[j]=S.me[m[1]]});
 const $=(h)=>h;const today=()=>{const d=sim?new Date(sim+"T00:00"):new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())};
 const ym=()=>{const t=today();return t.getFullYear()+"-"+(t.getMonth()+1)};
 const nxt=(e,t)=>{if(e.t==="B"){let x=new Date(t.getFullYear(),e.m-1,e.d);if(x<t)x.setFullYear(t.getFullYear()+1);return x}return new Date(e.y,e.m-1,e.d)};
@@ -222,7 +228,7 @@ function pay(i){const y=ym();S.paid[y]=S.paid[y]||[];const d=S.paid[y].includes(
 function gc(e){const n=new Date(e.x.getTime()+864e5);return"https://calendar.google.com/calendar/render?action=TEMPLATE&text="+encodeURIComponent(e.n)+"&dates="+ds(e.x)+"/"+ds(n)+(e.t==="B"?"&recur="+encodeURIComponent("RRULE:FREQ=YEARLY"):"")}
 function events(){const l=evs();return`<div class="sec"><h2>Events</h2><button class="btn pri" onclick="evForm()">+ Add event</button><table style="margin-top:8px">${l.map(e=>`<tr><td><span class="chip ${e.o}">${e.n}</span></td><td>${fd(e.x)}<br><small>${e.t==="B"?"setiap tahun":e.t==="W"?"wedding":"event"}</small></td><td style="white-space:nowrap"><button class="ic" title="Edit" onclick="evForm(${e.i})">${I.pen}</button><a class="ic" title="Tambah ke Google Calendar" target="_blank" rel="noopener" href="${gc(e)}">${I.cal}</a></td></tr>`).join("")}</table>${l.length?"":'<div class="empty">Belum ada event.</div>'}</div>`}
 function evForm(i){const n=new Date(),e=i===undefined?{n:"",t:"E",o:"u",d:n.getDate(),m:n.getMonth()+1,y:n.getFullYear()}:S.xe[i];
-form(i===undefined?"Add event":"Edit event",`<label>Nama<br><input id="fn" value="${e.n}"></label><br><label>Jenis<br><select id="ft">${[["B","Birthday"],["W","Wedding"],["E","Event"]].map(([k,v])=>`<option value="${k}" ${e.t===k?"selected":""}>${v}</option>`).join("")}</select></label><br><label>Tanggal<br><input type="date" id="fd" value="${(e.y||2000)+"-"+p(e.m)+"-"+p(e.d)}"></label><br><label>Warna<br><select id="fo">${Object.keys(OC).map(k=>`<option value="${k}" ${e.o===k?"selected":""}>${OC[k]}</option>`).join("")}</select></label>`,()=>{const nm=V("fn").trim(),d=V("fd");if(!nm||!d)return false;const[y,m,dd]=d.split("-").map(Number),o={n:nm,t:V("ft"),o:V("fo"),d:dd,m,y};i===undefined?S.xe.push(o):S.xe[i]=o;save();render()},i===undefined?null:()=>{S.xe.splice(i,1);save();render()})}
+form(i===undefined?"Add event":"Edit event",`<label>Nama<br><input id="fn" value="${e.n}"></label><br><label>Jenis<br><select id="ft">${[["B","Birthday"],["W","Wedding"],["E","Event"]].map(([k,v])=>`<option value="${k}" ${e.t===k?"selected":""}>${v}</option>`).join("")}</select></label><br><label>Tanggal<br><input type="date" id="fd" value="${(e.y||2000)+"-"+p(e.m)+"-"+p(e.d)}"></label><br><label>Warna<br><select id="fo">${Object.keys(OC).map(k=>`<option value="${k}" ${e.o===k?"selected":""}>${OC[k]}</option>`).join("")}</select></label>`,()=>{const nm=V("fn").trim(),d=V("fd");if(!nm||!d)return false;const[y,m,dd]=d.split("-").map(Number),o={n:nm,t:V("ft"),o:V("fo"),d:dd,m,y};i===undefined?S.xe.push(o):S.xe[i]=o;save();render()},i===undefined?null:()=>{const e=S.xe[i];if(e&&e.sh){S.he=S.he||[];S.he.push(e.n.toLowerCase())}S.xe.splice(i,1);save();render()})}
 function cal(){const t=today();if(!cm)cm={y:t.getFullYear(),m:t.getMonth()};const ev=S.xe.filter(e=>e.m-1===cm.m&&(e.t==="B"||e.y===cm.y)),f=(new Date(cm.y,cm.m,1).getDay()+6)%7,n=new Date(cm.y,cm.m+1,0).getDate();let c="";for(const h of"SSRKJSM")c+=`<span class="h">${h}</span>`;for(let i=0;i<f;i++)c+="<span></span>";for(let d=1;d<=n;d++){const x=ev.filter(e=>e.d===d),is=t.getFullYear()===cm.y&&t.getMonth()===cm.m&&t.getDate()===d;c+=`<span class="${x.length?x[0].o:""} ${is?"t":""}" title="${x.map(e=>e.n).join(", ")}">${d}</span>`}
 return`<div ontouchstart="tx=event.touches[0].clientX" ontouchend="Math.abs(event.changedTouches[0].clientX-tx)>50&&mv(event.changedTouches[0].clientX<tx?1:-1)"><div class="calh"><button class="ic" onclick="mv(-1)">${I.l}</button><b>${MON[cm.m]} ${cm.y}</b><button class="ic" onclick="mv(1)">${I.r}</button></div><div class="cal">${c}</div></div>`}
 function mv(n){const d=new Date(cm.y,cm.m+n,1);cm={y:d.getFullYear(),m:d.getMonth()};render()}
@@ -238,7 +244,7 @@ const qt=s=>(s||"").replace(/"/g,"&quot;");
 const grq=(id,n,t,v)=>`<b>${t}</b> <small>(maks ${n})</small><br>`+Array.from({length:n},(_,j)=>`<input class="g ${id}" placeholder="${j+1}" value="${qt((v||[])[j])}">`).join("")+"<br>";
 function mnForm(i){const e=i===undefined?["S","","","","","",""]:MN[i],sp=s=>s?s.split("|"):[];
 form(i===undefined?"Add menu":"Edit menu",`<label>Jenis<br><select id="mj">${[["S","Lauk siang"],["M","Lauk malam"],["F","Lauk frozen"]].map(([k,v])=>`<option value="${k}" ${e[0]===k?"selected":""}>${v}</option>`).join("")}</select></label><br><label>Nama menu<br><input id="mn" value="${qt(e[1])}"></label><br><label>Link video<br><input id="ml" placeholder="https://" value="${qt(e[5])}"></label><br><small>Tulis bahan seperti: KECAP ASIN 1SDM</small><br>`+grq("gd",5,"Ingredients daging",sp(e[2]))+grq("gs",5,"Ingredients sayur",sp(e[3]))+grq("gt",5,"Ingredients tepung",sp(e[6]))+grq("gb",12,"Ingredients bumbu",sp(e[4])),()=>{const n=V("mn").trim().toUpperCase();if(!n)return false;const g=c=>[...document.querySelectorAll("."+c)].map(x=>x.value.trim().toUpperCase()).filter(Boolean).join("|"),l=V("ml").trim(),m=[V("mj"),n,g("gd"),g("gs"),g("gb"),/^https?:\/\//.test(l)?l:"",g("gt")];
-if(i===undefined){S.xm.push(m);MN.push(m)}else{if(MN[i][0]!==m[0])Object.keys(S.cart).forEach(k=>{S.cart[k]=S.cart[k].filter(x=>x!==i)});MN[i]=m;S.me[String(i)]=m}save();render()})}
+if(i===undefined){S.xm.push(m);MN.push(m)}else{if(MN[i][0]!==m[0])Object.keys(S.cart).forEach(k=>{S.cart[k]=S.cart[k].filter(x=>x!==i)});const on=MN[i][1];MN[i]=m;if(i>=BASEN)S.xm[i-BASEN]=m;else S.me[on]=m}save();render()})}
 const ALLB=()=>BILLS.filter(b=>!(S.hb||[]).includes(b)).concat(S.xb);
 function billForm(){form("Tambah bill bulanan",`<label>Nama tagihan<br><input id="bn"></label><small>Muncul setiap bulan di Bills to pay.</small>${S.xb.length?"<br><br><b>Bill tambahan</b>"+S.xb.map((b,j)=>`<div style="display:flex;justify-content:space-between;align-items:center"><span>${b}</span><button class="ic" title="Hapus" onclick="delBill(${j})">${I.x}</button></div>`).join(""):""}`,()=>{const n=V("bn").trim().replace(/[<>&"]/g,"");if(!n)return false;S.xb.push(n);save();render()})}
 function delBill(j){const b=BILLS.length+j;S.xb.splice(j,1);Object.keys(S.paid).forEach(y=>{S.paid[y]=S.paid[y].filter(x=>x!==b).map(x=>x>b?x-1:x)});save();document.getElementById("md").innerHTML="";render()}
@@ -266,16 +272,16 @@ return{ev,st,mn,bl}}
 const getTab=async n=>{const r=await fetch("https://docs.google.com/spreadsheets/d/"+S.sid+"/gviz/tq?tqx=out:csv&headers=1&sheet="+encodeURIComponent(n));const t=await r.text();if(!r.ok||t.trim().startsWith("<"))throw new Error("x");return csvp(t)};
 function applySheet(x,remap){let nm=null;if(remap){nm={};["s","m","f"].forEach(k=>nm[k]=S.cart[k].map(i=>MN[i]&&MN[i][1]))}
 const low=s=>s.toLowerCase(),sn=new Set(x.ev.map(e=>low(e.n))),seed=["albert’s birthday","nata’s birthday"];
-S.xe=x.ev.concat((S.xe||[]).filter(e=>!e.sh&&!sn.has(low(e.n))&&!seed.includes(low(e.n))));
+const loc=(S.xe||[]).filter(e=>!e.sh&&!seed.includes(low(e.n))),ln=new Set(loc.map(e=>low(e.n)));S.xe=x.ev.filter(e=>!ln.has(low(e.n))&&!(S.he||[]).includes(low(e.n))).concat(loc);
 BILLS.length=0;x.bl.forEach(b=>BILLS.push(b));S.xb=(S.xb||[]).filter(b=>!x.bl.includes(b));
 Object.keys(ST).forEach(k=>{delete ST[k]});Object.keys(x.st).forEach(k=>{ST[k]=x.st[k]});
-const mnames=new Set(x.mn.map(m=>m[1]));S.xm=(S.xm||[]).filter(m=>!mnames.has(m[1]));S.me={};
-MN.length=0;x.mn.forEach(m=>MN.push(m));S.xm.forEach(m=>MN.push(m));
+const mnames=new Set(x.mn.map(m=>m[1]));S.xm=(S.xm||[]).filter(m=>!mnames.has(m[1]));S.me=S.me||{};
+MN.length=0;x.mn.forEach(m=>MN.push(m));BASEN=MN.length;S.xm.forEach(m=>MN.push(m));MN.forEach((m,j)=>{if(j<BASEN&&S.me[m[1]])MN[j]=S.me[m[1]]});
 if(nm)["s","m","f"].forEach(k=>{S.cart[k]=nm[k].map(n=>MN.findIndex(m=>m[1]===n)).filter(i=>i>=0)})}
 function applyCache(){try{const r=localStorage.getItem(SK);if(r)applySheet(JSON.parse(r),false)}catch(e){}}
 async function syncNow(){if(!S.sid||syncing)return;syncing=1;SERR="";try{const t=await Promise.all(["EVENTS","STOCK","MENU","BILLS"].map(getTab));const x=build(t[0],t[1],t[2],t[3]);if(!x.mn.length&&!x.ev.length&&!Object.keys(x.st).length&&!x.bl.length)throw new Error("empty");try{localStorage.setItem(SK,JSON.stringify(x))}catch(e){}applySheet(x,true);const n=new Date();S.sat=p(n.getHours())+":"+p(n.getMinutes());save()}catch(e){SERR="Gagal sinkron. Pastikan sheet dibagikan ke “siapa saja dengan link” dan nama tab (EVENTS, STOCK, MENU, BILLS) tidak diubah."}syncing=0;render()}
 function sheetForm(){form("Hubungkan Google Sheets",`<label>Link spreadsheet<br><input id="sl2" placeholder="https://docs.google.com/spreadsheets/d/..." value="${S.sid?"https://docs.google.com/spreadsheets/d/"+S.sid:""}"></label><small>Sheet harus dibagikan ke “siapa saja dengan link” (Viewer).</small>`,()=>{const v=V("sl2").trim(),m=v.match(/\/d\/([\w-]+)/)||v.match(/^([\w-]{20,})$/);if(!m)return false;S.sid=m[1];save();syncNow()},S.sid?()=>{S.sid="";save();render()}:null)}
-const syncBox=()=>`<div class="sec"><h2>Spreadsheet</h2><div class="empty">${S.sid?"Tersambung."+(S.sat?" Terakhir sinkron "+S.sat+".":""):"Belum tersambung ke Google Sheets."}${SERR?" "+SERR:""}</div><div style="margin-top:10px"><button class="btn pri" onclick="sheetForm()">${S.sid?"Ganti link":"Hubungkan"}</button> ${S.sid?'<button class="btn" onclick="syncNow()">Sinkron sekarang</button>':""}</div></div>`;
+
 function render(){const same=lastPage===page,y=window.scrollY,had=document.querySelectorAll("#app details").length,od=[...document.querySelectorAll("#app details[open]")].map(d=>d.firstElementChild.textContent);lastPage=page;nav();const ap=document.getElementById("app");ap.innerHTML={home,events,stock,menu}[page]();if(page==="home"){ap.querySelectorAll(".cols").forEach(c=>c.classList.add("cart-d"));const cs=[...ap.querySelectorAll(".sec")].find(e=>/Shopping carts/.test(e.textContent));if(cs)cs.insertAdjacentHTML("beforeend",cartList());ap.insertAdjacentHTML("beforeend",syncBox())}document.getElementById("dt").textContent=fd(today());if(same){if(had)document.querySelectorAll("#app details").forEach(d=>{d.open=od.includes(d.firstElementChild.textContent)});window.scrollTo(0,y)}else window.scrollTo(0,0)}
 applyCache();if(S.sid){syncNow();document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncNow()})}
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -307,6 +313,32 @@ if(!u){const k=rest.match(new RegExp("^\\s+("+UN+")(?=$|[\\s),.])"));if(k){u=k[1
 const n=(s.slice(0,m.index)+" "+rest).replace(/[()]/g," ").replace(/\s+/g," ").replace(/^[\s,:-]+|[\s,:-]+$/g,""),t=m[2].replace(",","."),q=t.includes("/")?t.split("/")[0]/t.split("/")[1]:+t;
 return[n||s,q,u]}
 // PARSE2-END
+var BASEN;var DIRTY={},pushT=null;
+// API-BEGIN
+var KEYS=["xm","me","xe","xs","xb","hb","hs","he","habis","paid","cart"];
+function val(k){if(k==="cart"){const o={};["s","m","f"].forEach(g=>{o[g]=S.cart[g].map(i=>MN[i]&&MN[i][1]).filter(Boolean)});return o}if(k==="xe")return(S.xe||[]).filter(e=>!e.sh);if(k==="paid")return S.paid||{};return S[k]||(k==="me"?{}:[])}
+function assign(k,v){if(k==="cart"){["s","m","f"].forEach(g=>{S.cart[g]=(v[g]||[]).map(n=>MN.findIndex(m=>m[1]===n)).filter(i=>i>=0)});return}if(k==="xe"){S.xe=(S.xe||[]).filter(e=>e.sh).concat(v);return}if(k==="he"){S.he=v;S.xe=(S.xe||[]).filter(e=>!(e.sh&&v.includes(e.n.toLowerCase())));return}S[k]=v}
+function remn(){MN.length=BASEN;S.xm.forEach(m=>MN.push(m));MN.forEach((m,j)=>{if(j<BASEN&&S.me[m[1]])MN[j]=S.me[m[1]]})}
+const isEmp=j=>["[]","{}",'{"s":[],"m":[],"f":[]}'].includes(j);
+function mergeState(st){const kt=S.kt=S.kt||{},sg=S.sig=S.sig||{};
+KEYS.forEach(k=>{const r=st[k],lt=kt[k]||0;
+if(r&&r.t>lt){assign(k,r.v);if(k==="xm"||k==="me")remn();sg[k]=JSON.stringify(val(k));kt[k]=r.t}
+else if(lt>(r?r.t:0)){sg[k]=JSON.stringify(val(k));DIRTY[k]=1}
+else if(!r){const j=JSON.stringify(val(k));if(!isEmp(j)){kt[k]=Date.now();DIRTY[k]=1}sg[k]=j}
+else sg[k]=JSON.stringify(val(k))});S.base=1}
+function onSave(){if(!S.api||!S.base)return;const kt=S.kt,sg=S.sig;let ch=0;KEYS.forEach(k=>{const j=JSON.stringify(val(k));if(j!==sg[k]){sg[k]=j;kt[k]=Date.now();DIRTY[k]=1;ch=1}});if(ch){try{localStorage.setItem("bs",JSON.stringify(S))}catch(e){}clearTimeout(pushT);pushT=setTimeout(pushNow,1200)}}
+// API-END
+async function api(body){const r=await fetch(body?S.api:S.api+(S.api.includes("?")?"&":"?")+"v="+Date.now(),body?{method:"POST",body:JSON.stringify(body)}:{});const t=await r.text();if(t.trim().startsWith("<"))throw new Error("html");return JSON.parse(t)}
+async function pushNow(){if(!S.api)return;const ks=Object.keys(DIRTY);if(!ks.length)return;const patch={};ks.forEach(k=>{patch[k]={v:val(k),t:S.kt[k]||Date.now()}});try{await api({patch});ks.forEach(k=>{delete DIRTY[k]});if(SERR.startsWith("Gagal menyimpan")){SERR="";render()}}catch(e){SERR="Gagal menyimpan ke spreadsheet. Akan dicoba lagi saat sinkron berikutnya.";render()}}
+function applyData(x){if(!x.mn.length&&!x.ev.length&&!Object.keys(x.st).length&&!x.bl.length)throw new Error("empty");try{localStorage.setItem(SK,JSON.stringify(x))}catch(e){}applySheet(x,true);const n=new Date();S.sat=p(n.getHours())+":"+p(n.getMinutes());save()}
+async function syncApi(){const j=await api(),t=j.tabs||{};applyData(build(t.EVENTS||[],t.STOCK||[],t.MENU||[],t.BILLS||[]));mergeState(j.state||{});save();await pushNow()}
+const sig2=()=>JSON.stringify([KEYS.map(val),MN,ST,BILLS,S.xe]);
+async function syncNow(manual){if(syncing||!(S.api||S.sid))return;syncing=1;SERR="";const before=sig2();try{if(S.api)await syncApi();else{const t=await Promise.all(["EVENTS","STOCK","MENU","BILLS"].map(getTab));applyData(build(t[0],t[1],t[2],t[3]))}}catch(e){SERR=S.api?"Gagal sinkron. Cek koneksi internet, dan pastikan link Apps Script benar dan akses deploy-nya “Anyone”.":"Gagal sinkron. Pastikan sheet dibagikan ke “siapa saja dengan link” dan nama tab (EVENTS, STOCK, MENU, BILLS) tidak diubah."}syncing=0;if(manual===true||SERR||sig2()!==before)render()}
+function sheetForm(){form("Hubungkan spreadsheet",`<label>Link Apps Script (berakhiran /exec)<br><input id="sl2" placeholder="https://script.google.com/macros/s/.../exec" value="${S.api||(S.sid?"https://docs.google.com/spreadsheets/d/"+S.sid:"")}"></label><small>Link ini didapat setelah Deploy di Google Apps Script (lihat panduan). Link Google Sheets biasa juga bisa, tapi hanya untuk baca.</small>`,()=>{const v=V("sl2").trim(),a=v.match(/^https:\/\/script\.google\.com\/(?:a\/[^\/]+\/)?macros\/s\/[\w-]+\/exec/),m=v.match(/\/d\/([\w-]+)/);if(a){if(S.api!==a[0]){S.api=a[0];S.sid="";S.base=0;S.kt={};S.sig={};DIRTY={}}}else if(m){S.sid=m[1];S.api="";S.base=0}else return false;save();syncNow(true)},(S.api||S.sid)?()=>{S.api="";S.sid="";S.base=0;save();render()}:null)}
+const syncBox=()=>`<div class="sec"><h2>Spreadsheet</h2><div class="empty">${S.api?"Tersambung (dua arah)."+(S.sat?" Terakhir sinkron "+S.sat+".":""):S.sid?"Tersambung (hanya baca)."+(S.sat?" Terakhir sinkron "+S.sat+".":""):"Belum tersambung."}${SERR?" "+SERR:""}</div><div style="margin-top:10px"><button class="btn pri" onclick="sheetForm()">${(S.api||S.sid)?"Ganti link":"Hubungkan"}</button> ${(S.api||S.sid)?'<button class="btn" onclick="syncNow(true)">Sinkron sekarang</button>':""}</div></div>`;
+setInterval(()=>{if(document.hidden||!S.api||document.getElementById("md").innerHTML||(document.activeElement&&/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)))return;syncNow()},30000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&S.api)syncNow()});
+if(S.api&&!S.sid)syncNow();
 document.getElementById("lg").innerHTML=I.house;
 render();
 </script><script>if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))</script></body></html>
