@@ -191,7 +191,7 @@ const ym=()=>{const t=today();return t.getFullYear()+"-"+(t.getMonth()+1)};
 const nxt=(e,t)=>{if(e.t==="B"){let x=new Date(t.getFullYear(),e.m-1,e.d);if(x<t)x.setFullYear(t.getFullYear()+1);return x}return new Date(e.y,e.m-1,e.d)};
 const fd=x=>x.getDate()+" "+MON[x.getMonth()]+" "+x.getFullYear();
 function evs(){const t=today();return EV.map(e=>{const x=nxt(e,t);return{...e,x,left:Math.round((x-t)/864e5)}}).filter(e=>e.left>=0).sort((a,b)=>a.x-b.x)}
-const inHome=e=>e.left<=(e.t==="B"?7:30);
+const inHome=e=>e.left<7;
 const lbl=l=>l===0?"hari ini":l===1?"besok":l+" hari lagi";
 // ===== CART =====
 function parse(s){s=s.replace(/SAOS/g,"SAUS").replace(/CABE/g,"CABAI").replace(/MERICA/g,"LADA");const m=s.match(/^(.*?)\s+(\d+(?:\/\d+)?)\s*([A-Z]*)$/);if(!m)return[s.trim(),null,""];const q=m[2].includes("/")?m[2].split("/")[0]/m[2].split("/")[1]:+m[2];return[m[1].trim(),q,m[3]]}
@@ -203,7 +203,7 @@ const go=p=>{page=p;render()};
 function ask(t,fn){const m=document.getElementById("md");m.innerHTML=`<div class="modal"><div><p>${t}</p><button class="btn" id="y">Yes</button><button class="btn" id="n">No</button></div></div>`;document.getElementById("n").onclick=()=>m.innerHTML="";document.getElementById("y").onclick=()=>{m.innerHTML="";fn()}}
 function home(){
  const e=evs().filter(inHome);
- let h=`<div class="sec"><h2>Events</h2>${e.length?`<div class="chips">${e.map(x=>`<span class="chip ${x.o}">${x.n} · ${x.x.getDate()} ${MON[x.x.getMonth()]} <small style="color:inherit;opacity:.7">(${lbl(x.left)})</small></span>`).join("")}</div>`:`<div class="empty">Tidak ada event dalam waktu dekat.</div>`}${cal()}</div>`;
+ let h=`<div class="sec"><h2>Events</h2>${e.length?`<div class="chips">${e.map(x=>`<span class="chip ${x.o}">${x.n} · ${x.x.getDate()} ${MON[x.x.getMonth()]} <small style="color:inherit;opacity:.7">(${lbl(x.left)})</small></span>`).join("")}</div>`:`<div class="empty">Tidak ada event dalam 7 hari ke depan.</div>`}${cal()}</div>`;
  const hb=Object.keys(ST).map(c=>{const it=S.habis.filter(k=>k.split("|")[0]===c);return it.length?`<h3>${c}</h3><div class="chips">${it.map(k=>`<button class="chip gray" onclick="buy('${k.replace(/'/g,"\\'")}')">${k.split("|")[1]}</button>`).join("")}</div>`:""}).join("");
  h+=`<div class="sec"><h2>Stok habis<button class="ic" title="Ke Stocklist" onclick="go('stock')">${I.plane}</button></h2>${hb||'<div class="empty">Semua stok aman.</div>'}</div>`;
  const pd=S.paid[ym()]||[];
